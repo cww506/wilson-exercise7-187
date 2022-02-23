@@ -1,0 +1,52 @@
+//Author: Curtis Wilson
+//Course: CPT 187
+//Purpose:This class keeps a record of all sales completed and writes the sales history to a file.
+//StartDate: 2/22/2022
+package edu.cpt187.wilson.exercise7;
+
+import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class WriteOrder 
+{
+	private boolean fileFoundFlag;
+	private String masterFileName = "";
+	private int recordCount = 0;
+
+	WriteOrder(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	}//END OF non-default constructor
+
+	///Setter///
+	public void setWriteOrder( int borrowedItemID, String borrowedItemName, double borrowedItemPrice, int borrowedQuantity, double borrowedOrderCost)
+	{
+		try
+		{
+			PrintWriter filePW = new PrintWriter( new FileWriter(masterFileName, true));
+			filePW.printf("%n%d\t%s\t%f\t%d\t%f", borrowedItemID,borrowedItemName,borrowedItemPrice,borrowedQuantity,borrowedOrderCost);
+			fileFoundFlag = true;
+			filePW.close();
+			recordCount++;
+		}//END OF Try block
+		catch (IOException ex)
+		{
+			fileFoundFlag = false;
+		}//END OF catch block
+	}//END OF set write order
+
+	///Getters////
+	public boolean getFileFoundFlag()
+	{
+		return fileFoundFlag;
+	}//END OF get file found flag
+	public String getFileName()
+	{
+		return masterFileName;
+	}//END OF get file name
+	public int getRecordCount() 
+	{
+		return recordCount;
+	}//END OF get record count
+}//END OF write Order class
