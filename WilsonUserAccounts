@@ -1,0 +1,120 @@
+//Author: Curtis Wilson
+//Course: CPT 187
+//Purpose:This class stores and retrieves user name and password information.
+//StartDate: 2/22/2022
+package edu.cpt187.wilson.exercise7;
+
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class UserAccounts 
+{
+	//declare/initialize variables and constants
+	private final int NOT_FOUND = -1;
+	private final int RESET_VALUE = 0;
+	private final int MAXIMUM_RECORDS = 50;
+	private String[] userNames = new String[MAXIMUM_RECORDS];
+	private String[] passwords = new String[MAXIMUM_RECORDS];
+	private String masterFileName = "";
+	private int recordCount = 0;
+	private int searchedIndex = 0;
+
+	//constructor
+	public UserAccounts(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	}//end of non-default constructor
+
+	//SETTER//
+	public void setUserAccountArrays()
+	{
+		//try block
+		try
+		{
+			Scanner infile = new Scanner(new FileInputStream(masterFileName));
+			recordCount = RESET_VALUE;
+			while (infile.hasNext()== true && recordCount<MAXIMUM_RECORDS)
+			{
+				userNames[recordCount] = infile.next();
+				passwords[recordCount] = infile.next();
+				recordCount++;
+			}//END OF while for field assignment
+			infile.close();
+		}//END OF try block
+		catch(IOException ex)
+		{
+			recordCount = NOT_FOUND;
+		}//END OF catch
+	}//END OF set user account arrays
+	public void setSearchedIndex(String borrowedUserName)
+	{
+		searchedIndex = getSeqSearch(borrowedUserName);
+	}//END OF method to find and set user name from database
+	public void setSearchedIndex(String borrowedUserName, String borrowedPassword)
+	{
+		searchedIndex = getSeqSearch(borrowedUserName);
+
+		//make sure user name and password match
+		if (searchedIndex >= RESET_VALUE && getPasswordMatch(borrowedPassword) == false)
+		{
+			searchedIndex = NOT_FOUND;
+		}//END OF set not found flag if user name/password mismatch
+	}//END OF overloaded searchedIndex method. verifies user name/password match
+	public void setWriteOneRecord(String borrowedUserName, String borrowedPassword)
+	{
+		try
+		{
+			PrintWriter filePW = new PrintWriter( new FileWriter(masterFileName, true));
+			filePW.printf("%n%s\t%s", borrowedUserName,borrowedPassword);
+			filePW.close();
+			recordCount++;
+		}//END OF Try block
+		catch (IOException ex)
+		{
+			recordCount = NOT_FOUND;
+		}//END OF catch block
+	}//END OF write user name/password to database
+
+	//GETTER//
+	public int getSeqSearch(String borrowedBorrowedUserName)
+	{
+		int localIndex = 0;
+		int localFound = NOT_FOUND;
+		while(localIndex < recordCount)
+		{
+			if(borrowedBorrowedUserName.equalsIgnoreCase(userNames[localIndex]))
+			{
+				localFound = localIndex;
+				localIndex = recordCount;
+			}//END OF search result found
+			else
+			{
+				localIndex++;
+			}//END OF increment to keep searching
+		}//end of sequential search repetition
+		return localFound;
+	}//END OF sequential search
+	public boolean getPasswordMatch(String borrowedBorrowedPassword)
+	{
+		return passwords[searchedIndex].equals(borrowedBorrowedPassword);
+	}//END OF get password match true/false
+	public String getFileName()
+	{
+		return masterFileName;
+	}//END OF get masterFileName
+	public int getMaximumRecords()
+	{
+		return MAXIMUM_RECORDS;
+	}//END OF get maximum records
+	public int getRecordCount()
+	{
+		return recordCount;
+	}//END of get record count
+	public int getSearchedIndex()
+	{
+		return searchedIndex;
+	}//END OF get searched index
+}//END OF user Accounts class
